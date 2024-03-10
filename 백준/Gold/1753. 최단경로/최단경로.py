@@ -8,13 +8,15 @@ my_pq = PriorityQueue()
 V, E = map(int, input().split())
 
 n_list = [[] for i in range(V+1)]
-sp_list = [5*(10**7)] * (V+1)
-v_list = [False] * (V+1)
+sp_list = [5*(10**7) for i in range(V+1)]
+v_list = [False for i in range(V+1)]
 
 s_node = int(input())
 for i in range(E):
     u, v, w = map(int, input().split())
     n_list[u].append([v, w])
+    
+# 인접 리스트 만들기 종료
 
 sp_list[s_node] = 0
 my_pq.put((0, s_node))
