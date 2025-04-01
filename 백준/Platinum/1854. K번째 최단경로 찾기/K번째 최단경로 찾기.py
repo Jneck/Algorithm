@@ -3,35 +3,34 @@ input = sys.stdin.readline
 print = sys.stdout.write
 
 from queue import PriorityQueue
+pq = PriorityQueue()
 
-N, M, K = map(int, input().split())
+n, m, k = list(map(int, input().split()))
+node_list = [[] for i in range(n+1)]
+node_path_list = [[sys.maxsize for j in range(k)] for i in range(n+1)]
 
-n_list = [[] for i in range(N+1)]
-sp_list = [[3*(10**9) for j in range(K)] for i in range(N+1)]
+for i in range(m):
+    a, b, c = list(map(int, input().split()))
+    node_list[a].append([b, c])
 
-for i in range(M):
-    u, v, w = map(int, input().split())
-    n_list[u].append([v, w])
+node_path_list[1][0] = 0
+pq.put([0, 1])
+while not pq.empty():
+    pq_data = pq.get()
+    path_len = pq_data[0]
+    node = pq_data[1]
 
-my_pq = PriorityQueue()
+    for next_node_data in node_list[node]:
+        next_node = next_node_data[0]
+        new_len = path_len + next_node_data[1]
 
-sp_list[1][0] = 0
-my_pq.put([0, 1])
+        if new_len < node_path_list[next_node][-1]:
+            node_path_list[next_node][-1] = new_len
+            node_path_list[next_node].sort()
+            pq.put([new_len, next_node])
 
-while not my_pq.empty():
-    cur_node_set = my_pq.get()
-    sp = cur_node_set[0]
-    cur_node = cur_node_set[1]
-    for new_node_set in n_list[cur_node]:
-        new_node = new_node_set[0]
-        weight = new_node_set[1]
-        if sp_list[new_node][-1] > weight + sp:
-            sp_list[new_node][-1] = weight+sp
-            sp_list[new_node].sort()
-            my_pq.put([weight+sp, new_node])
-
-for i in range(1, N+1):
-    if sp_list[i][K-1] == 3*(10**9):
-        print('-1\n')
+for node_path in node_path_list[1:]:
+    if node_path[-1] != sys.maxsize:
+        print(f'{node_path[-1]}\n')
     else:
-        print(str(sp_list[i][K-1]) + '\n')
+        print('-1\n')
